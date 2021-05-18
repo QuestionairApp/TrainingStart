@@ -9,6 +9,7 @@
     <!-- Bootstrap CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="scripts/trainingapp.js"></script>
     <title>Hello, world!</title>
 </head>
 
@@ -17,18 +18,25 @@
         <div class="mb-3">
             <label for="ttName" class="form-label">Name</label>
             <input type="text" class="form-control" id="ttName" placeholder="Name, Vorname">
+            <div class="invalid-feedback">Bitte geben Sie einen Namen ein.</div>
         </div>
         <div class="mb-3">
-            <label for="ttHoersaal" class="form-label">Name</label>
+            <label for="ttHoersaal" class="form-label">Hörsaal</label>
             <input type="text" class="form-control" id="ttHoersaal" placeholder="Hörsaal">
+            <div class="invalid-feedback">Bitte geben Sie die Hörsaalbezeichnung ein.</div>
         </div>
         <div class="mb-3">
             <label for="ttHoersaalleiter" class="form-label">Hörsaalleiter</label>
             <input type="text" class="form-control" id="ttHoersaalleiter" placeholder="Hörsaalleiter">
+            <div class="invalid-feedback">Bitte geben Sie den Namen des Hörsaalleiters ein.</div>
         </div>
         <div class="mb-3">
             <label for="ttTelefon" class="form-label">Telefon</label>
             <input type="text" class="form-control" id="ttTelefon" placeholder="Telefon">
+            <div class="invalid-feedback">Bitte geben Sie die Telefonnummer für Nachfragen ein.</div>
+        </div>
+        <div class="mb-3>">
+            <button class="btn btn-secondary" id="createData">Datei anlegen</button>
         </div>
     </div>
 </body>
