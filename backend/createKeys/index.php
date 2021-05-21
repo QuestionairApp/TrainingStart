@@ -7,14 +7,15 @@ require_once('./fpdf/fpdf.php');
 $rsa=new Rsa();
 $keyPair=createRSAKeys();
 $publicKey=$keyPair->public;
-$testCrypt=$rsa->encrypt("Hallo Welt", $publicKey);
-echo base64_encode($testCrypt);
-
+//$testCrypt=$rsa->encrypt("Hallo Welt", $publicKey);
+$testCrypt=openssl_public_encrypt("Hallo Welt", $encrypted, $publicKey);
 $rndBytes=openssl_random_pseudo_bytes(20, $strong);
 $fileName=base64_encode($rndBytes);
-$myfile=fopen("./tmp/".$fileName, "w");
-fwrite($myfile, base64_encode($testCrypt));
-fclose($myfile);
+if($testCrypt){
+    $myfile = fopen("./tmp/".$fileName, "w") or die("Unable to open file");
+    fwrite($myfile, base64_encode($encrypted));
+    fclose($myfile);
+}
 
 $qrData=new stdClass();
 $qrData->key=$keyPair->secret;
@@ -25,6 +26,7 @@ $signature=base64_encode($rsa->signMessage($hash));
 $qrData->signature=$signature;
 $fileName= $fileName.".png";
 QrCode::png(json_encode($qrData), $fileName);
+
 
 $pdf = new FPDF();
 $pdf->AddPage();
@@ -48,6 +50,5 @@ $pdf->Ln();
 $pdf->MultiCell(40, 10, $hash);
 $pdf->Ln();
 $pdf->Image($fileName);
-$pdf->Output("F", $fileName.".pdf");
-
+$pdf->Output();
 ?>

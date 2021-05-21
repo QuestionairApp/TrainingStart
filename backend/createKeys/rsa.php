@@ -43,6 +43,17 @@ C+sXsyxl0bDp62Ps8iKwmvKDmKysq8kox4Y3oC66uZf9
         return openssl_private_encrypt($data,$encrypted,self::getPrivateKey())? base64_encode($encrypted) : null;
     }
     
+    public static function encrypt($data, $publicKey)
+    {
+        if(!is_string($data)){
+            return null;
+        }
+        if(openssl_public_encrypt($data, $encrypted, $publicKey)){
+            return $encrypted;
+        } else {
+            return null;
+        }
+    }
     
     /**
      * Private key decryption
@@ -53,6 +64,14 @@ C+sXsyxl0bDp62Ps8iKwmvKDmKysq8kox4Y3oC66uZf9
                 return null;
         }
         return (openssl_private_decrypt(base64_decode($encrypted), $decrypted, self::getPrivateKey()))? $decrypted : null;
+    }
+    public static function decrypt($encrypted, $privKey)
+    {
+        
+        if(!is_string($encrypted)){
+                return null;
+        }
+        return (openssl_private_decrypt(base64_decode($encrypted), $decrypted, $privKey))? $decrypted : null;
     }
 
     public static function signMessage($message){
