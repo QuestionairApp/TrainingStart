@@ -20,10 +20,26 @@ QrCode::png(json_encode($qrData), $fileName);
 
 $pdf = new FPDF();
 $pdf->AddPage();
-$pdf->SetFont('Arial','B',16);
+$pdf->SetFont('Arial','B',12);
 $pdf->Cell(40,10,'Dies ist ein Anschreiben');
 $pdf->Ln();
-$pdf->Image($fileName, 30, 30);
-$pdf->Output();
+$pdf->Cell(40, 10, "FileName");
+$pdf->Ln();
+$pdf->MultiCell(170,10, $fileName);
+$pdf->Ln();
+$pdf->Cell(40, 10, "Signatur");
+$pdf->Ln();
+$pdf->MultiCell(170,10, $signature);
+$pdf->Ln();
+
+$pdf->Cell(40,10, "toHash");
+$pdf->Ln();
+
+$pdf->MultiCell(170,10, $toHash);
+$pdf->Ln();
+$pdf->MultiCell(40, 10, $hash);
+$pdf->Ln();
+$pdf->Image($fileName);
+$pdf->Output("F", $fileName.".pdf");
 
 ?>

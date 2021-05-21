@@ -56,7 +56,7 @@ C+sXsyxl0bDp62Ps8iKwmvKDmKysq8kox4Y3oC66uZf9
     }
 
     public static function signMessage($message){
-        openssl_sign($message, $signature, self::getPrivateKey());
+        openssl_sign($message, $signature, self::getPrivateKey(), OPENSSL_ALGO_SHA512);
         return($signature);
     }
 }
