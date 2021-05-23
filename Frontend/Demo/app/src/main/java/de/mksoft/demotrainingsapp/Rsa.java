@@ -1,16 +1,12 @@
 package de.mksoft.demotrainingsapp;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Base64;
 import android.util.Log;
-import android.view.View;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.security.GeneralSecurityException;
@@ -25,6 +21,7 @@ import java.security.Signature;
 import java.security.SignatureException;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
+import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.TreeSet;
@@ -48,6 +45,24 @@ public class Rsa {
         }
         br.close();
         return strKeyPEM;
+    }
+
+    public RSAPrivateKey getPrivateKeyFromPreferences() throws NoSuchAlgorithmException, InvalidKeySpecException {
+        SharedPreferences pref=view.getSharedPreferences("TrainingApp", Context.MODE_PRIVATE);
+        String pem=pref.getString("privateKey", "");
+        if(!pem.equals("")){
+            pem = pem.replace("-----BEGIN PRIVATE KEY-----\n", "");
+            pem=pem.replace("-----END PRIVATE KEY-----", "");
+            //byte[] encoded = Base64.decodeBase64(privateKeyPEM);
+            byte[] encoded=Base64.decode(pem, Base64.DEFAULT);
+
+            KeyFactory kf = KeyFactory.getInstance("RSA");
+            PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(encoded);
+            RSAPrivateKey privKey = (RSAPrivateKey) kf.generatePrivate(keySpec);
+            return privKey;
+
+        }
+        return null;
     }
 
     public RSAPrivateKey getPrivateKey() throws IOException, GeneralSecurityException {
@@ -106,7 +121,8 @@ public class Rsa {
     }
 
     public  String decrypt(String cipherText, PrivateKey privateKey) throws IOException, GeneralSecurityException {
-        Cipher cipher = Cipher.getInstance("RSA");
+        //Cipher cipher = Cipher.getInstance("RSA");
+        Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
         cipher.init(Cipher.DECRYPT_MODE, privateKey);
         return new String(cipher.doFinal(Base64.decode(cipherText, Base64.DEFAULT)), "UTF-8");
     }

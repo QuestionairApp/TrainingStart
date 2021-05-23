@@ -5,9 +5,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -18,19 +18,20 @@ import org.json.JSONObject;
 
 import java.security.MessageDigest;
 import java.security.PublicKey;
-import java.security.interfaces.RSAPublicKey;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
-    private Button scanBtn;
-    private IntentIntegrator qrScan = new IntentIntegrator(this);
-    private Rsa rsa;
+
+    private final IntentIntegrator qrScan = new IntentIntegrator(this);
+    TextView tv;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        scanBtn=findViewById(R.id.scanBtn);
+        Button scanBtn=findViewById(R.id.scanBtn);
         scanBtn.setOnClickListener(this);
+        tv=findViewById(R.id.textView);
     }
+
 
     @Override
     public void onClick(View view) {
@@ -42,10 +43,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         IntentResult result=IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         if(result!=null){
             if(result.getContents()==null){
-                Toast.makeText(this, "Result not foung", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Result not found", Toast.LENGTH_SHORT).show();
             } else {
                 try {
-                    String cont=result.getContents();
                     JSONObject obj = new JSONObject(result.getContents());
                     String key=obj.getString("key");
                     String filename=obj.getString("fileName");
@@ -66,15 +66,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         PublicKey pub=rsa.getPublicKey();
                         boolean v=rsa.verify(pub, sbi.toString(), signatur);
                         if(v){
-                            Toast.makeText(this, "Key and Filename verified", Toast.LENGTH_SHORT).show();
                             SharedPreferences pref=this.getSharedPreferences("TrainingApp", MODE_PRIVATE);
                             SharedPreferences.Editor editor= pref.edit();
                             editor.putString("privateKey", key);
+                            editor.apply();
+                            String address="http://training.mkservices.de/anschreiben/tmp/"+filename;
+                            tv.setText(address);
+                            new DownloadTask(this, address);
                         }else {
                             Toast.makeText(this, "Key and Filename not verified", Toast.LENGTH_SHORT).show();
                         }
                     } catch(Exception e) {
-                        System.out.println(e);
+                        e.printStackTrace();
                     }
                 } catch(JSONException e){
                     e.printStackTrace();
