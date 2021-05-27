@@ -20,8 +20,8 @@ const createFile = (evt) => {
             tmpObj.data = document.getElementById(tmpFor).value;
             trainingData.push(tmpObj);
         }
-        let trainingDataJson = JSON.stringify(trainingData);
-        alert(trainingDataJson);
+        let trainingDataJson = Base64.encode(JSON.stringify(trainingData));
+        window.open("http://training.mkservices.de/anschreiben/index.php?daten=" + trainingDataJson);
     }
 }
 
@@ -37,4 +37,5 @@ const checkForm = () => {
             document.getElementById(tmpId).classList.add("is-invalid");
         }
     }
+    return confirmed;
 }

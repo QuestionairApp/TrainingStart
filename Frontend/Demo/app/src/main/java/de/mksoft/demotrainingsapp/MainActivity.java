@@ -22,14 +22,21 @@ import java.security.PublicKey;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
     private final IntentIntegrator qrScan = new IntentIntegrator(this);
-    TextView tv;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Button scanBtn=findViewById(R.id.scanBtn);
+        Button trainingInfo=findViewById(R.id.btnToTraining);
         scanBtn.setOnClickListener(this);
-        tv=findViewById(R.id.textView);
+        trainingInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i=new Intent(getApplicationContext(), TrainingInfo.class);
+                startActivity(i);
+            }
+        });
     }
 
 
@@ -71,7 +78,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             editor.putString("privateKey", key);
                             editor.apply();
                             String address="http://training.mkservices.de/anschreiben/tmp/"+filename;
-                            tv.setText(address);
                             new DownloadTask(this, address);
                         }else {
                             Toast.makeText(this, "Key and Filename not verified", Toast.LENGTH_SHORT).show();
