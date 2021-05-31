@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         Button scanBtn=findViewById(R.id.scanBtn);
         Button trainingInfo=findViewById(R.id.btnToTraining);
+        Button mapBtn=findViewById(R.id.mapBtn);
         scanBtn.setOnClickListener(this);
         trainingInfo.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -37,7 +38,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 startActivity(i);
             }
         });
-    }
+        mapBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i=new Intent(getApplicationContext(), MapActivity.class);
+                startActivity(i);
+            }
+        });
+     }
 
 
     @Override
